@@ -3,24 +3,33 @@ from time import sleep
 from threading import Thread
 
 from modules.processManager import ProcessManager
+from modules.memoryManager import MemoryManager
 
+'''
+A classe Kernel é usada para gerenciar processos, memória e filas. O construtor inicializa o gerenciador de processos e 
+cria um thread que executará o método run(). O método run() chama o método run_processes() que percorre cada processo ativo e diminui seu limite de 
+tempo e processador de tempo. Se o processador de tempo chegar a 0, ele insere o processo em uma fila com sua prioridade e define o processador de 
+tempo de volta para 2. Finalmente, ele dorme por 1 segundo antes de percorrer o próximo processo.
+'''
 
 class Kernel:
-    def __init__(self, input_process, input_memory):
+    def __init__(self, input_process, input_archive):
         self.input_process = input_process
-        self.input_memory = input_memory
+        self.input_archive = input_archive
         self.process_manager = ProcessManager()
-        # self.memory_manager = MemoryManager(1024)
+        self.memory_manager = MemoryManager(1024)
         # self.queue_manager = QueueManager(1)
         # self.resource_manager = ResourceManager()
         self.processes = []
         self.thread = Thread(target=self.run)
         self.thread.start()
+        self.start_time = datetime.now()
 
     def run(self):
         # self.load_processes()
-        # self.load_memory()
+        self.load_memory()
         self.run_processes()
+        print(self)
 
     # def load_processes(self):
     #     self.processes = archives.load_processes(self.input_process)
@@ -49,3 +58,10 @@ class Kernel:
 
     def get_thread(self):
         return self.thread
+
+    def load_memory(self):
+        for process in self.processes:
+            self.memory_manager.load(process.id, process.mem_allocated, process.offset)
+
+    def scheduler(self):
+        

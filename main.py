@@ -7,6 +7,8 @@
 
 from kernel import Kernel
 from sys import argv
+from utils.readProcess import read_processes
+from utils.readArchive import read_archive
 
 def main():
    try:
@@ -18,8 +20,12 @@ def main():
    except:
       print("usage: python main.py <input_process> <input_memory>")
       return 0
+
+   # Read inputs from files
+   processes = read_processes(argv[1])
+   archives = read_archive(argv[2])
       
-   kernel = Kernel(argv[1], argv[2])
+   kernel = Kernel(processes, archives)
 
    kernel.run()
    thread = kernel.get_thread()
