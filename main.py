@@ -27,9 +27,9 @@ def main():
       
    kernel = Kernel(processes, archives)
 
-   kernel.run()
-   thread = kernel.get_thread()
-   thread.join()
+   # kernel.run()
+   # thread = kernel.get_thread()
+   # thread.join()
 
    print("Finished")
 

@@ -32,24 +32,33 @@ class Kernel:
 
         self.thread = Thread(target=self.run)
         self.thread.start()
+        self.thread.join()
 
     def run(self):
+        print("Running kernel")
         for process in self.input_process:
-            self.process_manager.create_process(process)
-            # self.memory_manager.insert_process(process)
-        while True:
-            self.run_processes()
-            sleep(1)
+            sleep(self.start_time.second - datetime.now().second)
+            print("Process: ", process)
+            
+            
+            
+            
+            
+        #     self.active_processes.append(self.process_manager.create_process(process))
+        #     # self.memory_manager.insert_process(process)
+        # while True:
+        #     # self.run_processes()
+        #     print(self.active_processes.pop())
+        #     sleep(1)
     
-    def run_processes(self):
+    # def run_processes(self):
 
-        for process in self.process_manager.get_processes():
-            print(process.get_id(), process.get_processor_time(), process.get_time_limit())
-            process.decrease_processor_time()
-            process.decrease_time_limit()
+    #     for process in self.process_manager.processes:
+    #         process.decrease_processor_time()
+    #         process.decrease_time_limit()
 
-            if process.get_processor_time() == 0:
-                self.queue_manager.insert_process(process.get_priority(), process)
-                process.set_processor_time(2)
+    #         if process.get_processor_time() == 0:
+    #             self.queue_manager.insert_process(process.get_priority(), process)
+    #             process.set_processor_time(2)
         
-        self.process_manager.remove_finished_processes()
+    #     self.process_manager.remove_finished_processes()

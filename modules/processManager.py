@@ -11,7 +11,7 @@ class ProcessManager:
         process = Process(process_id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices)
         process.offset = offset
         self.processes[process_id] = process
-        return process_id
+        return process
 
     def get_process(self, id):
         return self.processes[id]
@@ -20,7 +20,7 @@ class ProcessManager:
         return self.processes
 
     def get_id(self, process):
-        return process.get_id()
+        return process.process_id
 
     def delete_process(self, id):
         del self.processes[id]
