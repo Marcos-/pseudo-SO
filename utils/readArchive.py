@@ -1,4 +1,4 @@
-def read_file(file_name):
+def read_archive(file_name):
     with open(file_name, "r") as file:
         lines = file.readlines()
         quantity_blocks = int(lines[0])
@@ -27,7 +27,7 @@ def read_file(file_name):
         return quantity_blocks, quantity_segments, files, operations
 
 if __name__ == '__main__':
-    quantity_blocks, quantity_segments, files, operations = read_file('input/filex.txt')
+    quantity_blocks, quantity_segments, files, operations = read_archive('input/filex.txt')
     print("Quantity of blocks:", quantity_blocks)
     print("Quantity of segments occupied:", quantity_segments)
     print("Files:", files)

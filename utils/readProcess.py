@@ -2,7 +2,17 @@ def run_process(data):
   # extrair os dados de cada linha
   init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code = data.split(',')
 
-  return init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code
+  # return init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code
+  return {
+    'init_time': init_time,
+    'priority': priority,
+    'processor_time': processor_time,
+    'memory_blocks': memory_blocks,
+    'printer_code': printer_code,
+    'scanner': scanner,
+    'modem': modem,
+    'disk_code': disk_code
+  }
 
 def printProcess(process):
     init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code = process
@@ -26,7 +36,7 @@ def read_processes(filename):
     for line in data:
       process = run_process(line,)
       processes.append(process)
-      printProcess(process)
+      # printProcess(process)
 
     return processes
 

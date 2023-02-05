@@ -1,3 +1,11 @@
+# A alocação de memória deve ser implementada como um conjunto de blocos contíguos, onde cada bloco equivale uma palavra da memória real.
+# Cada processo deve alocar um segmento contíguo de memória, o qual permanecerá alocado durante toda a execução do processo. Deve-se notar 
+# que não é necessário a implementação de memória virtual, swap, nem sistema de paginação. Portanto, não é necessário gerenciar a memória, 
+# apenas verificar a disponibilidade de recursos antes de iniciar um processo.
+# Deve ser utilizado um tamanho fixo de memória de 1024 blocos. Dessa quantidade, 64 blocos devem ser reservados para processos de 
+# tempo-real e os 960 blocos restantes devem ser compartilhados entre os processos de usuário. A Figura 2 ilustra o caso onde cada 
+# bloco de memória possui 1 MB.
+
 class MemoryManager:
     def __init__(self, memory_size):
         self.memory_size = memory_size
@@ -16,31 +24,18 @@ class MemoryManager:
         del self.allocations[process_id]
         self.offset = offset
 
-class QueueManager:
-    def __init__(self, aging_time):
-        self.queue = []
-        self.aging_time = aging_time
-    
-    def insert(self, process_id, priority):
-        self.queue.append((process_id, priority))
-    
-    def aging(self):
-        for i in range(len(self.queue)):
-            self.queue[i] = (self.queue[i][0], self.queue[i][1] + self.aging_time)
-    
-    def next_process(self):
-        if not self.queue:
-            return NO_NEXT_PROCESS
-        self.queue = sorted(self.queue, key=lambda x: x[1], reverse=True)
-        return self.queue.pop(0)[0]
+    def get_allocation(self, process_id):
+        return self.allocations[process_id]
 
-class ResourceManager:
-    def __init__(self):
-        self.devices = {}
+    def num_allocations(self):
+        return len(self.allocations)
 
-    def add_device(self, device_id, device):
-        self.devices[device_id] = device
+    def get_memory_size(self):
+        return self.memory_size
 
-    def get_device(self, device_id):
-        return self.devices[device_id]
+    def get_offset(self):
+        return self.offset
+
+    def get_allocations(self):
+        return self.allocations
 

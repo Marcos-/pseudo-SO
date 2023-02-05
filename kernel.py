@@ -4,6 +4,8 @@ from threading import Thread
 
 from modules.processManager import ProcessManager
 from modules.memoryManager import MemoryManager
+from modules.queueManager import QueueManager
+from modules.resourceManager import ResourceManager
 
 '''
 A classe Kernel é usada para gerenciar processos, memória e filas. O construtor inicializa o gerenciador de processos e 
@@ -16,52 +18,38 @@ class Kernel:
     def __init__(self, input_process, input_archive):
         self.input_process = input_process
         self.input_archive = input_archive
+
+        self.active_processes = []
+        self.num_processes = 0
+
         self.process_manager = ProcessManager()
         self.memory_manager = MemoryManager(1024)
-        # self.queue_manager = QueueManager(1)
-        # self.resource_manager = ResourceManager()
-        self.processes = []
-        self.thread = Thread(target=self.run)
-        self.thread.start()
+        self.queue_manager = QueueManager(1)
+        self.resource_manager = ResourceManager()
+
+        self.quantum = 1
         self.start_time = datetime.now()
 
+        self.thread = Thread(target=self.run)
+        self.thread.start()
+
     def run(self):
-        # self.load_processes()
-        self.load_memory()
-        self.run_processes()
-        print(self)
-
-    # def load_processes(self):
-    #     self.processes = archives.load_processes(self.input_process)
-
-    # def load_memory(self):
-    #     for process in self.processes:
-    #         self.memory_manager.load(process.id, process.mem_allocated, process.offset)
-
-    def run_processes(self):
-        while self.process_manager.num_active_processes() > 0:
-            self.queue_manager.aging()
-            process_id = self.queue_manager.next_process()
-            if process_id == NO_NEXT_PROCESS:
-                continue
-            process = self.process_manager.get_process(process_id)
-            if process.time_limit == 0:
-                self.process_manager.delete_process(process.id)
-                self.memory_manager.remove(process.id, process.mem_allocated, process.offset)
-                continue
-            process.time_limit -= 1
-            process.time_processor -= 1
-            if process.time_processor == 0:
-                self.queue_manager.insert(process.id, process.priority)
-                process.time_processor = 2
+        for process in self.input_process:
+            self.process_manager.create_process(process)
+            # self.memory_manager.insert_process(process)
+        while True:
+            self.run_processes()
             sleep(1)
+    
+    def run_processes(self):
 
-    def get_thread(self):
-        return self.thread
+        for process in self.process_manager.get_processes():
+            print(process.get_id(), process.get_processor_time(), process.get_time_limit())
+            process.decrease_processor_time()
+            process.decrease_time_limit()
 
-    def load_memory(self):
-        for process in self.processes:
-            self.memory_manager.load(process.id, process.mem_allocated, process.offset)
-
-    def scheduler(self):
+            if process.get_processor_time() == 0:
+                self.queue_manager.insert_process(process.get_priority(), process)
+                process.set_processor_time(2)
         
+        self.process_manager.remove_finished_processes()
