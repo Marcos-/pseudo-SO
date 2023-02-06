@@ -1,7 +1,15 @@
 from threading import Semaphore
 from queue import Queue
 from datetime import datetime
-
+'''
+ Esta classe implementa um controlador de filas para gerenciar processos.
+ O construtor inicializa variáveis necessárias como tempo de envelhecimento,
+ semáforos e filas. O método insert() adiciona um processo à fila específica 
+ de acordo com sua prioridade. O método remove() remove um processo específico 
+ da fila. O método aging() realiza o envelhecimento dos processos na fila 2 e 3 
+ e os move para a fila de prioridade 1 se o tempo de envelhecimento for atingido. 
+ Por fim, o método next_process() retorna o próximo ID do processo na fila.
+'''
 class QueueManager:
     def __init__(self, aging_time):
         self.aging_time = aging_time

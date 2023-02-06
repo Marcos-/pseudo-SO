@@ -42,7 +42,7 @@ class Kernel:
     def run(self):
         print("Running kernel")
         for process in self.input_process:
-            wait = int(process['init_time']) - (datetime.now() - self.start_time).microseconds / 1000000
+            wait = int(process['init_time'])
             print("Process {} will start in {} seconds".format(process, wait))
             sleep(wait)
 
