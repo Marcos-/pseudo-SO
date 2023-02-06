@@ -14,28 +14,10 @@ class MemoryManager:
 
     def load(self, process_id, size, offset):
         if self.offset + size > self.memory_size:
-            return NOT_ENOUGH_RAM_MEMORY
+            return 'NOT_ENOUGH_RAM_MEMORY'
         self.allocations[process_id] = (self.offset, size)
         offset[0] = self.offset
         self.offset += size
-        return SUCCESS
+        return 'SUCCESS'
     
-    def remove(self, process_id, size, offset):
-        del self.allocations[process_id]
-        self.offset = offset
-
-    def get_allocation(self, process_id):
-        return self.allocations[process_id]
-
-    def num_allocations(self):
-        return len(self.allocations)
-
-    def get_memory_size(self):
-        return self.memory_size
-
-    def get_offset(self):
-        return self.offset
-
-    def get_allocations(self):
-        return self.allocations
 

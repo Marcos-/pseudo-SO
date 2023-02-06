@@ -6,10 +6,20 @@ class ProcessManager:
         self.counter = 0
 
     def create_process(self, process):
-        priority, time_created, mem_allocated, time_limit, time_processor, io_devices, offset, op = process   
+        process_id = process['id']
+        priority = process['priority']
+        mem_allocated = process['memory_blocks']
+        time_created = process['init_time']
+        time_limit = process['init_time']
+        time_processor = process['processor_time']
+        io_devices = [process['printer_code'], process['scanner'], process['modem'], process['disk_code']]
+        # offset = process['offset']
+        
+        
         process_id = self.get_next_process_id()
         process = Process(process_id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices)
-        process.offset = offset
+        process.print_processes(io_devices[0], io_devices[1], io_devices[2], io_devices[3])
+        # process.offset = offset
         self.processes[process_id] = process
         return process
 

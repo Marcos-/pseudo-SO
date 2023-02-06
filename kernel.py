@@ -37,8 +37,20 @@ class Kernel:
     def run(self):
         print("Running kernel")
         for process in self.input_process:
-            sleep(self.start_time.second - datetime.now().second)
-            print("Process: ", process)
+            wait = int(process['init_time']) + (datetime.now() - self.start_time).microseconds / 1000000
+            print("Process {} will start in {} seconds".format(process, wait))
+            sleep(wait)
+
+            offset = [0]
+            if self.memory_manager.load(process['id'], process['memory_blocks'], offset) != 'NOT_ENOUGH_RAM_MEMORY':
+                self.process_manager.create_process(process)
+                self.num_processes += 1
+            else:
+                print("Not enough RAM memory")
+                break
+            
+
+            
             
             
             

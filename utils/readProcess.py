@@ -1,13 +1,14 @@
-def run_process(data):
+def run_process(data, id):
   # extrair os dados de cada linha
   init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code = data.split(',')
 
   # return init_time, priority, processor_time, memory_blocks, printer_code, scanner, modem, disk_code
   return {
-    'init_time': init_time,
-    'priority': priority,
-    'processor_time': processor_time,
-    'memory_blocks': memory_blocks,
+    'id': id,
+    'init_time': int(init_time),
+    'priority': int(priority),
+    'processor_time': int(processor_time),
+    'memory_blocks': int(memory_blocks),
     'printer_code': printer_code,
     'scanner': scanner,
     'modem': modem,
@@ -30,11 +31,13 @@ def read_processes(filename):
   with open(filename, 'r') as file:
     # ler as linhas do arquivo
     data = file.readlines()
+    id = 0
 
     # criar uma lista de processos
     processes = []
     for line in data:
-      process = run_process(line,)
+      id += 1
+      process = run_process(line, id)
       processes.append(process)
       # printProcess(process)
 
