@@ -17,7 +17,7 @@ class ProcessManager:
         self.processes = {}
         self.counter = 0
 
-    def create_process(self, process):
+    def create_process(self, process, archive):
         process_id = process['id']
         priority = process['priority']
         mem_allocated = process['memory_blocks']
@@ -25,11 +25,12 @@ class ProcessManager:
         time_limit = process['init_time']
         time_processor = process['processor_time']
         io_devices = [process['printer_code'], process['scanner'], process['modem'], process['disk_code']]
+        archive = archive
         # offset = process['offset']
         
         
         process_id = self.get_next_process_id()
-        process = Process(process_id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices)
+        process = Process(process_id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices, archive)
         process.print_processes(io_devices[0], io_devices[1], io_devices[2], io_devices[3])
         # process.offset = offset
         self.processes[process_id] = process

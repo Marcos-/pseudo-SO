@@ -13,7 +13,7 @@ A classe importa módulos de outros arquivos como ArchiveManager, ResourceManage
 '''
 
 class Process:
-    def __init__(self, id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices):
+    def __init__(self, id, priority, mem_allocated, time_created, time_limit, time_processor, io_devices, archive):
         self.id = id
         self.priority = priority
         self.mem_allocated = mem_allocated
@@ -30,6 +30,9 @@ class Process:
             'MODEM',
             'DISK'
         ]
+        self.archive = archive
+        self.archive_tasks = []
+        self.archive_ops(archive[3])
 
     def run(self, time: int) -> int:
         print("process", self.id , "=>")
@@ -42,6 +45,11 @@ class Process:
 
         sleep(time)
         return 'PROCESS_FINISHED'
+    
+    def archive_ops(self, ops):
+        if len(ops) > 0:
+            [self.archive_tasks.append(['ARCHIVE_ACTION', ops.pop(0)]) for _ in range(len(ops))]
+        print("Tasks: ",self.archive_tasks)
 
     def print_processes(self, printer, scanner, modem, driver):
         print("    PID:     \t", self.id)

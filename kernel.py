@@ -48,7 +48,7 @@ class Kernel:
 
             offset = [0]
             if self.memory_manager.load(process['id'], process['memory_blocks'], offset) != 'NOT_ENOUGH_RAM_MEMORY':
-                self.process_manager.create_process(process)
+                self.process_manager.create_process(process, self.input_archive)
                 self.queue_manager.insert(process['id'], process['priority'])
                 self.num_processes += 1
             else:
