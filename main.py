@@ -1,7 +1,6 @@
 # Authors:
 #   Marcos Marques;
 #   Caio Massucato;
-#   Kevin Souto
 #
 # python main.py <input_process> <input_memory>
 
@@ -14,9 +13,9 @@ def main():
    try:
       argv[1]
       argv[2]
-      # if len(argv) == 0:
-      #    print("usage: python main.py <input_process> <input_memory>")
-      #    return
+      if len(argv) == 0:
+         print("usage: python main.py <input_process> <input_memory>")
+         return
    except:
       print("usage: python main.py <input_process> <input_memory>")
       return 0
@@ -25,11 +24,7 @@ def main():
    processes = read_processes(argv[1])
    archives = read_archive(argv[2])
       
-   kernel = Kernel(processes, archives)
-
-   # kernel.run()
-   # thread = kernel.get_thread()
-   # thread.join()
+   Kernel(processes, archives)
 
    print("Finished")
 

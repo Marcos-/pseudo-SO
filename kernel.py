@@ -42,7 +42,7 @@ class Kernel:
     def run(self):
         print("Running kernel")
         for process in self.input_process:
-            wait = int(process['init_time']) - (datetime.now() - self.start_time).microseconds / 10000
+            wait = int(process['init_time']) - (datetime.now() - self.start_time).microseconds / 1000000
             print("Process {} will start in {} seconds".format(process, wait))
             sleep(wait)
 
@@ -52,7 +52,7 @@ class Kernel:
                 self.queue_manager.insert(process['id'], process['priority'])
                 self.num_processes += 1
             else:
-                print("Not enough RAM memory")
+                print("Error: Not enough RAM memory")
                 break
 
     def scheduler(self):
@@ -64,3 +64,43 @@ class Kernel:
             self.resource_manager.empty_buffer()
 
             self.queue_manager.aging()
+
+            # Check which is the next process to be run, if there is a process it must be removed from queue
+            id = self.queue_manager.next_process()
+
+            print("Next process: {}".format(id))
+            # If there is next process
+            if id != 'NO_NEXT_PROCESS':
+                # Get instance of Process
+                process = self.process_manager.get_process(id)
+
+                self.process_manager.print_processes(process)
+
+                # Execute till the end if is a real time process, else, execute a quantum
+                if process.priority == 0:
+                    duration = process.time_processor
+                else:
+                    duration = self.quantum
+                code = process.run(duration)
+                
+                # If the process has finished, so it has to free the memory occupied by the process
+                if code == 'PROCESS_FINISHED':
+                    self.memory_manager.remove(id, process.mem_allocated, process.offset)
+                    self.process_manager.delete_process(id)
+                    self.num_processes -= 1
+                    print("Process {} finished".format(id))
+                else:
+                    resource_thread = Thread(target=self.resource_request, args=(code, id, process.priority))
+                    resource_thread.start()
+                    self.queue_manager.insert(id, process.priority)
+
+    def resource_request(self, code, id, priority):
+        if code == 'PRINTER':
+            self.resource_manager.request_printer(id)
+        elif code == 'SCANNER':
+            self.resource_manager.request_scanner(id)
+        elif code == 'MODEM':
+            self.resource_manager.request_modem(id)
+        elif code == 'DISK':
+            self.resource_manager.request_disk(id)
+        

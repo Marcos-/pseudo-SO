@@ -21,6 +21,9 @@ class MemoryManager:
         mem_index = 0
         block_size = 0
 
+        if size > self.memory_size:
+            return 'NOT_ENOUGH_RAM_MEMORY'
+
         while(mem_index < len(self.memory_blocks)):
             if (self.memory_blocks[mem_index] == A and block_size < size):
                 block_size +=1
@@ -49,3 +52,5 @@ class MemoryManager:
             size -= 1
         self.allocations.pop(process_id)
 
+    def remove(self, process_id, size, offset):
+        self.unload(process_id, size, offset)
