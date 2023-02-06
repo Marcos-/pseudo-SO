@@ -24,53 +24,43 @@ class Kernel:
 
         self.process_manager = ProcessManager()
         self.memory_manager = MemoryManager(1024)
-        self.queue_manager = QueueManager(1)
+        self.queue_manager = QueueManager(10)
         self.resource_manager = ResourceManager()
 
         self.quantum = 1
         self.start_time = datetime.now()
 
         self.thread = Thread(target=self.run)
+        self.thread2 = Thread(target=self.scheduler)
+
         self.thread.start()
         self.thread.join()
+
+        self.thread2.start()
+        self.thread2.join()
 
     def run(self):
         print("Running kernel")
         for process in self.input_process:
-            wait = int(process['init_time']) + (datetime.now() - self.start_time).microseconds / 1000000
+            wait = int(process['init_time']) - (datetime.now() - self.start_time).microseconds / 10000
             print("Process {} will start in {} seconds".format(process, wait))
             sleep(wait)
 
             offset = [0]
             if self.memory_manager.load(process['id'], process['memory_blocks'], offset) != 'NOT_ENOUGH_RAM_MEMORY':
                 self.process_manager.create_process(process)
+                self.queue_manager.insert(process['id'], process['priority'])
                 self.num_processes += 1
             else:
                 print("Not enough RAM memory")
                 break
-            
 
-            
-            
-            
-            
-            
-            
-        #     self.active_processes.append(self.process_manager.create_process(process))
-        #     # self.memory_manager.insert_process(process)
-        # while True:
-        #     # self.run_processes()
-        #     print(self.active_processes.pop())
-        #     sleep(1)
-    
-    # def run_processes(self):
+    def scheduler(self):
+        while self.num_processes > 0:
 
-    #     for process in self.process_manager.processes:
-    #         process.decrease_processor_time()
-    #         process.decrease_time_limit()
+            for (id, priority) in self.resource_manager.get_buffer():
+                self.queue_manager.insert(id, priority)
+            
+            self.resource_manager.empty_buffer()
 
-    #         if process.get_processor_time() == 0:
-    #             self.queue_manager.insert_process(process.get_priority(), process)
-    #             process.set_processor_time(2)
-        
-    #     self.process_manager.remove_finished_processes()
+            self.queue_manager.aging()
