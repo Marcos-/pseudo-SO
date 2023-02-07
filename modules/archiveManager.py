@@ -3,6 +3,7 @@ class ArchiveManager():
         self.log = []
         self.archive = {}
         self.created_files = {}
+        self.load_memory(memoryload)
 
     def createfile(self, processID: int, filename: str, filesize: int, priority: int) -> int:
         filesize = int(filesize)
@@ -29,6 +30,8 @@ class ArchiveManager():
             self.__alocate(filename, filesize, processID, (i-count), priority)
             self.created_files[(processID, filename)] = (i-count, filesize)
             return self.register_operation(processID, filename, 'CREATE_FILE_SUCESS', offset= (i-count), filesize=filesize)
+            
+            
         return self.register_operation(processID, filename, 'CREATE_FILE_NOT_ENOUGTH_MEM')
 
 
@@ -79,3 +82,16 @@ class ArchiveManager():
                 )
             )
             print("")
+    
+    def load_memory(self, load: list) -> None:
+        for line in load:
+            try: # Process operations, ex: 0, 0, A, 5
+                int(line[0])
+                raise Exception("Something went wrong in file sistem initialization")
+            except ValueError: # File ocupation, ex: X, 0, 2
+                filename = line[0]
+                offset = line[1]
+                filesize = line[2]
+                for i in range(filesize):
+                    self.archive[offset + i] = {"process_id": -1, "filename": filename, 'priority': -1}
+                self.created_files[(-1, filename)] = (offset, filesize)

@@ -43,12 +43,12 @@ class Process:
             # If needs some archive operation, let the archive module handle
             if task[0] == 'ARCHIVE_ACTION':
                 op = task[1]
+                print("Task: ",op)
                 print("Operation: ",op[1])
                 print("Name: ", op[2])
-                print("Size: ", op[3])
-                # if op[1] == 0:
-                #     ArchiveManager.createfile(self.id, op[2], op[3], self.priority)
-                #     ArchiveManager.print_file_log()
+                print("Priority: ",self.priority)
+                if op[1] == 0:
+                    ArchiveManager.createfile(processID=self.id, filename=op[2], filesize=op[3], priority=self.priority)
                 # elif op[1] == 1:
                 #     ArchiveManager.deletefile(self.id, op[2], self.priority)
 
