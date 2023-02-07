@@ -38,6 +38,20 @@ class Process:
         print("process", self.id , "=>")
         print("P" + str(self.id), "STARTED")
 
+        if(len(self.archive_tasks) > 0):
+            task = self.archive_tasks.pop(randint(0, 100) % len(self.archive_tasks))
+            # If needs some archive operation, let the archive module handle
+            if task[0] == 'ARCHIVE_ACTION':
+                op = task[1]
+                print("Operation: ",op[1])
+                print("Name: ", op[2])
+                print("Size: ", op[3])
+                # if op[1] == 0:
+                #     ArchiveManager.createfile(self.id, op[2], op[3], self.priority)
+                #     ArchiveManager.print_file_log()
+                # elif op[1] == 1:
+                #     ArchiveManager.deletefile(self.id, op[2], self.priority)
+
         if (randint(0, 1) == 1):
             random_resource = randint(0, 3)
             print("P" + str(self.id), "REQUESTING", self.tasks[random_resource])
